@@ -60,10 +60,21 @@
           <p>Powered by MongProject - Developed By B</p>
         </div>
       </footer>
+
+      <div class="loading-wrapper">
+        <div class="loading-spinner"></div>
+      </div>
     </div>
 
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <script src="/ev_charge/js/crtPos.js"></script>
     <script src="/ev_charge/js/getCrt.js"></script>
+    <script>
+      $(document).ajaxComplete(function () {
+        $(".loading-wrapper").fadeOut();
+      });
+    </script>
   </body>
 </html>
