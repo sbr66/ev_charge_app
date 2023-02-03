@@ -2,8 +2,8 @@ const keyParam = document.location.href.split("=")[1];
 const decodeParam = decodeURI(keyParam);
 
 function getCrtLists(latitude, longitude) {
-  console.log("현재 위도 : ", latitude);
-  console.log("현재 경도 : ", longitude);
+  // console.log("현재 위도 : ", latitude);
+  // console.log("현재 경도 : ", longitude);
 
   $.ajax({
     url: `/ev_charge/php/search_list.php?key=${decodeParam}`, // 요청 엔드포인트
@@ -11,7 +11,7 @@ function getCrtLists(latitude, longitude) {
     success: function (data) {
       const parseJson = JSON.parse(data); // json 문자열을  json 데이터 형식으로 파싱
       const items = parseJson.body.items.item;
-      console.log(items);
+      // console.log(items);
 
       // 지도 마커 표시
       var mapContainer = document.getElementById("map"), // 지도를 표시할 div
@@ -27,6 +27,7 @@ function getCrtLists(latitude, longitude) {
 
       for (let i = 0; i < items.length; i++) {
         positions.push({
+          content: `<div class="marker-info">${items[i].csNm}</div>`,
           latlng: new kakao.maps.LatLng(items[i].lat, items[i].longi),
         });
         if (items[i].cpStat == "1") {
@@ -35,11 +36,9 @@ function getCrtLists(latitude, longitude) {
           imageSrc.push("/ev_charge/img/red.png");
         }
       }
+      // console.log(positions);
 
-      console.log(imageSrc);
-
-      // 마커 이미지의 이미지 주소입니다
-      // var imageSrc = "/ev_charge/img/green.png";
+      // console.log(imageSrc);
 
       for (var i = 0; i < positions.length; i++) {
         // 마커 이미지의 이미지 크기 입니다
@@ -55,10 +54,109 @@ function getCrtLists(latitude, longitude) {
           title: positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
           image: markerImage, // 마커 이미지
         });
+
+        // console.log(positions[i].content);
+
+        // 마커에 표시할 인포윈도우를 생성합니다
+        var infowindow = new kakao.maps.InfoWindow({
+          content: positions[i].content, // 인포윈도우에 표시할 내용
+        });
+
+        // 각 마커의 제목을 말풍선으로 표시
+        infowindow.open(map, marker);
       }
+
+      // 말풍선 정보 스타일 수정
+      const markerInfo = document.querySelectorAll(".marker-info");
+      // console.log(markerInfo);
+
+      markerInfo.forEach((info) => {
+        info.parentElement.parentElement.style.background = "rgb(34, 36, 41)";
+        info.parentElement.style.width = 100 + "%";
+        info.parentElement.style.height = 100 + "%";
+        info.parentElement.style.border = "white";
+      });
+
+      getLists(latitude, longitude, data);
     },
     error: function (e) {
       console.log(e);
     },
+  });
+}
+
+function getLists(lat, lon, d) {
+  const parseJson = JSON.parse(d); // json 문자열을  json 데이터 형식으로 파싱
+  const items = parseJson.body.items.item;
+  // console.log(items); // getCrtLists() 내부의 data
+  const itemList = document.querySelector(".item-list");
+  let listEl;
+  items.map((li) => {
+    // console.log(li);
+
+    let charTp, cpStat, statBg;
+
+    if (li.charTp === "1") {
+      charTp = "완속";
+    } else {
+      charTp = "급속";
+    }
+
+    if (li.cpStat === "1") {
+      cpStat = "충전 가능";
+      statBg = "rgb(50,151,255)";
+    } else if (li.cpStat === "2") {
+      cpStat = "충전중";
+      statBg = "rgb(210,145,188)";
+    } else {
+      cpStat = "오류(점검중)";
+      statBg = "rgb(255, 50, 50)";
+    }
+
+    function getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2) {
+      function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+      }
+
+      var R = 6371; // Radius of the earth in km
+      var dLat = deg2rad(lat2 - lat1); // deg2rad below
+      var dLon = deg2rad(lng2 - lng1);
+      var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) *
+          Math.cos(deg2rad(lat2)) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c; // Distance in km
+      return d;
+    }
+
+    // console.log(
+    //   getDistanceFromLatLonInKm(
+    //     37.5552855,
+    //     126.9198412,
+    //     37.56838316139128,
+    //     126.89494282897327
+    //   )
+    // );
+
+    listEl = `
+          <div class="item">
+          <p>${li.addr}</p>
+          <div class="stats">
+            <span style="background:${statBg}">상태 : ${cpStat}</span>
+            <span>타입 : ${charTp}</span>
+            <span>갱신 : ${li.statUpdateDatetime}</span>
+            <span>거리 : ${getDistanceFromLatLonInKm(
+              lat,
+              lon,
+              li.lat,
+              li.longi
+            ).toFixed(2)}km</span>
+          </div>
+        </div>`;
+
+    itemList.innerHTML += listEl;
   });
 }
