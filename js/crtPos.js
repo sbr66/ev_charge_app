@@ -17,7 +17,15 @@ function success(pos) {
   }
 
   if (typeof getCrtLists === "function") {
-    getCrtLists(lat, lon); // getCrtLists.js
+    let prn = 1;
+
+    getCrtLists(lat, lon, prn); // getCrtLists.js
+
+    const ldmr = document.querySelector(".item-list button");
+    ldmr.addEventListener("click", function () {
+      prn++;
+      getCrtLists(lat, lon, prn);
+    });
   }
 }
 

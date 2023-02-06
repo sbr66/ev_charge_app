@@ -46,7 +46,6 @@ section.bar-sec .near-btns{width:100%;height:auto; margin-top:.5rem;}
 section.bar-sec .near-btns button{width:100%; border:none; padding:.75rem; border-radius:.25rem;}
 section.bar-sec .near-btns em{font-style:normal;}
 
-
 /* Footer Style */ 
 footer{position:fixed; bottom:0; left:0; padding:0 0.5rem; width:100%; z-index: 10; background: rgb(34, 36, 41)} 
 footer .center{text-align:center; padding:1rem; }
@@ -55,7 +54,6 @@ footer .center{text-align:center; padding:1rem; }
 #map{width: 100%; height: 100vh;}
 
 .marker-info{color: white; border: 0; font-size: 12px;  text-align: center; font-family: 'Noto Sans KR'; padding-top: .25rem;}
-
 
 /* Map List Style */
 .map-lists{position:fixed; width:100%; height:auto; z-index: 10;}
@@ -71,14 +69,14 @@ footer .center{text-align:center; padding:1rem; }
 .map-lists .item-list .item .stats span:nth-child(4){display:flex; align-items: center; justify-content: center;}
 .map-lists .item-list p{width:100%; height:auto; padding:.25rem; background:rgb(224, 228, 228); color:rgb(34, 36, 41); text-align:center; margin-bottom:.25rem;}
 
+.item-list button{border: none; width: 100%; text-align: center; padding: .5rem 0;}
 
 /* Loading Effect Style */
 :root {
     --loading-spinner-background: rgba(200, 200, 200, 0.20);
     --loading-spinner-body: white;
    }
-   
-   
+    
    .loading-wrapper {
     height: 100vh;
     display: flex;
@@ -91,14 +89,12 @@ footer .center{text-align:center; padding:1rem; }
     width:100%;
    }
    
-   
    .loading-spinner, .loading-spinner::after {
     width: 25px;
     height: 25px;
     border-radius: 50%;
     z-index:100;
    }
-   
    
    .loading-spinner {
     border-top: 3px solid var(--loading-spinner-background);
@@ -117,8 +113,7 @@ footer .center{text-align:center; padding:1rem; }
     -webkit-animation-timing-function: linear;
     animation-timing-function: linear;
    }
-   
-   
+     
    @-webkit-keyframes loading-spinner-animation {
     0% {
       -webkit-transform: rotate(0deg);
@@ -129,7 +124,6 @@ footer .center{text-align:center; padding:1rem; }
       transform: rotate(360deg);
     }
    }
-   
    
    @keyframes tw-loading-spinner-animation {
     0% {
